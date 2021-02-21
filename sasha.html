@@ -1,1 +1,81 @@
-
+URLDownloadToFile, https://raw.githubusercontent.com/frk1/hazedumper/master/csgo.toml, Settings Sasha.INI
+Process, Priority,, L
+SetBatchLines, -1
+SetMouseDelay, -1
+SetWinDelay, -1
+SetControlDelay, -1
+SendMode Input
+IniRead, DllName, Settings Sasha.INI, Offsets, Dll GAME, client.dll
+IniWrite, %DllName%, Settings Sasha.INI, Offsets, Dll GAME
+IniRead, dwLocalPlayer, Settings Sasha.INI, Offsets, dwLocalPlayer, 14201532
+IniRead, m_fFlags, Settings Sasha.INI, Offsets, m_fFlags, 260
+IniRead, m_MoveType, Settings Sasha.INI, Offsets, m_MoveType, 604
+Process, Exist, csgo.exe
+PID = %ErrorLevel%
+if (ErrorLevel = 0)
+Run steam://rungameid/730
+else
+Process, wait, csgo.exe
+MyLabel:
+Process, Exist, csgo.exe
+PID = %ErrorLevel%
+Client := GetDllBase(DllName, PID)
+while (!Client){
+Process, Exist, csgo.exe
+PID = %ErrorLevel%
+Client := GetDllBase(DllName, PID)
+Goto, MyLabel
+}
+ProcessHandle := DllCall("OpenProcess", "int", 2035711, "char", 0, "UInt", PID, "UInt")
+loop{
+localadress := ReadMemory( Client + dwLocalPlayer ,PID,ProcessHandle)
+player_jump := ReadMemory(localadress + m_fFlags ,PID,ProcessHandle)
+player_lesna := ReadMemory(localadress + m_MoveType ,PID,ProcessHandle)
+if (!localadress){
+continue
+}
+if (GetKeyState("XButton2") || GetKeyState("Space", "P")){
+if (player_jump = 0x101 || player_jump = 0x107 || player_lesna = 0x9){
+SendEvent, {Blind}{sc138}
+sleep 100
+}}}
+return
+GetDllBase(DllName, PID = 0)
+{
+SetFormat, Integer, Hex
+TH32CS_SNAPMODULE := 0x00000008
+INVALID_HANDLE_VALUE = -1
+VarSetCapacity(me32, 548, 0)
+NumPut(548, me32)
+snapMod := DllCall("CreateToolhelp32Snapshot", "Uint", TH32CS_SNAPMODULE
+, "Uint", PID)
+If (snapMod = INVALID_HANDLE_VALUE) {
+SetFormat, Integer, D
+Return 0
+}
+If (DllCall("Module32First", "Uint", snapMod, "Uint", &me32)){
+while(DllCall("Module32Next", "Uint", snapMod, "UInt", &me32)) {
+If !DllCall("lstrcmpi", "Str", DllName, "UInt", &me32 + 32) {
+DllCall("CloseHandle", "UInt", snapMod)
+SetFormat, Integer, D
+Return NumGet(&me32 + 20)
+}
+}
+}
+DllCall("CloseHandle", "Uint", snapMod)
+SetFormat, Integer, D
+Return 0
+}
+ReadMemory(MADDRESS,PID = 0, ProcessHandle = -1)
+{
+VarSetCapacity(MVALUE,4,0)
+DllCall("ReadProcessMemory","UInt",ProcessHandle,"UInt",MADDRESS,"Str",MVALUE,"UInt",4,"UInt *",0)
+Loop 4
+result += *(&MVALUE + A_Index-1) << 8*(A_Index-1)
+SetFormat, Integer, D
+return, result
+}
+~*Ins::Pause
+return
+~*Del::ExitApp
+return
