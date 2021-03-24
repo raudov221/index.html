@@ -1,9 +1,0 @@
-[Function]
-BunnyHop = Bhop_On
-Glow = Glow_On
-Trigger = Trigger_On
-Radar = Radar_On
-[Link]
-Link_download = "https://www.youtube.com/"
-[Znak]
-Color = 20
