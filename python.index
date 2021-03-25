@@ -1,0 +1,11 @@
+{
+  "Function": {
+    "BunnyHop": 1,
+    "Glow": 1,
+    "Trigger": 1,
+    "Radar": 1
+  },
+  "BanList": {
+    "Ban_all_function": 1
+  }
+}
