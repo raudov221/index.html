@@ -1,12 +1,6 @@
 [Function]
-BunnyHop = 1
-Glow = 1
-Trigger = 1
-Radar = 1
+SkinChanger = 1
 [BanList]
 Ban_all_function = 0
 [Version]
-version_BunnyHop = 1
-version_Glow = 1
-version_Trigger = 1
-version_Radar = 1
+version_SkinChanger = 1
