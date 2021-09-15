@@ -1,0 +1,2 @@
+text := "Я люблю ахк"
+MsgBox, %text%
